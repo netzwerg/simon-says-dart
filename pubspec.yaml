@@ -1,0 +1,4 @@
+name: dart-playground
+dependencies:
+  browser: any
+  angular: any

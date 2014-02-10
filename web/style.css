@@ -1,0 +1,53 @@
+body #buttons {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body #buttons > div {
+    height: 100%;
+    width: 25%;
+    cursor: pointer;
+    float: left;
+    position: relative;
+    padding: 0;
+}
+
+body #buttons > div.active {
+    z-index: 4;
+}
+
+body #buttons > div#blue {
+    background: #384765;
+}
+
+body #buttons > div#blue.active {
+    background: #2E72FF;
+}
+
+body #buttons > div#green {
+    background: #37693C;
+}
+
+body #buttons > div#green.active {
+    background: #2AFA33;
+}
+
+body #buttons > div#yellow {
+    background: #FFB21A;
+}
+
+body #buttons > div#yellow.active {
+    background: #FFFF11;
+}
+
+body #buttons > div#red {
+    background: #993D42;
+}
+
+body #buttons > div#red.active {
+    background: #CC0033;
+}
