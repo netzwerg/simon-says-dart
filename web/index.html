@@ -4,12 +4,13 @@
     <link rel="stylesheet" href="style.css">
     <title>Simon Says</title>
 </head>
-<body>
-
-<div id="buttons" buttons>
-    <div ng-repeat="button in ctrl.buttons" id="{{button.color}}"  ng-mousedown="ctrl.click(button)" ng-mouseup="ctrl.inactivateAll()" ng-class="{'active' : button.active}"></div>
-</div>
-
+<body gameCtrl>
+    <div id="controls">
+        <button type="button" class="btn btn-primary btn-lg" ng-click="ctrl.start()">Start!</button>
+    </div>
+    <div id="buttons">
+        <div ng-repeat="button in ctrl.buttons" id="{{button.color}}"  ng-mousedown="ctrl.click(button)" ng-mouseup="ctrl.inactivateAll()" ng-class="{'active' : button.active}"></div>
+    </div>
 <script src="../packages/shadow_dom/shadow_dom.min.js"></script>
 <script type="application/dart" src="main.dart"></script>
 <script type="text/javascript" src="../packages/browser/dart.js"></script>

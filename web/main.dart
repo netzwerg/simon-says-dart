@@ -1,16 +1,31 @@
 import 'package:angular/angular.dart';
+import 'dart:math';
+import 'dart:async';
 
 // Temporary, please follow https://github.com/angular/angular.dart/issues/476
 @MirrorsUsed(override: '*')
 import 'dart:mirrors';
 
-@NgController(selector: '[buttons]', publishAs: 'ctrl')
-class ButtonController {
+@NgController(selector: '[gameCtrl]', publishAs: 'ctrl')
+class GameController {
+
+  final Random r = new Random();
 
   List<Button> buttons;
+  List<Button> sequence;
 
-  ButtonController() {
+  GameController() {
     buttons = [new Button("blue"), new Button("green"), new Button("yellow"), new Button("red")];
+  }
+
+  void start() {
+    nextRandomButton().active = true;
+    Duration duration = new Duration(milliseconds: 500);
+    Timer timer = new Timer(duration, () => inactivateAll());
+  }
+
+  Button nextRandomButton() {
+    return buttons[r.nextInt(4)];
   }
 
   bool click(Button b) => b.active = true;
@@ -34,7 +49,7 @@ class Button {
 
 class SimonSaysModule extends Module {
   SimonSaysModule() {
-    type(ButtonController);
+    type(GameController);
   }
 }
 
