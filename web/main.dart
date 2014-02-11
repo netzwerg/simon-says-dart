@@ -11,16 +11,14 @@ class ButtonController {
   List<Button> buttons;
 
   ButtonController() {
-    buttons = [new Button("blue"), new Button("green"), new Button("yellow"), new Button("red"), ];
+    buttons = [new Button("blue"), new Button("green"), new Button("yellow"), new Button("red")];
   }
 
-  void click(Button b) {
-    b.setActive(true);
-  }
+  bool click(Button b) => b.active = true;
 
-  void inactivateAll() {
-    buttons.forEach((b) {b.setActive(false);});
-  }
+  void inactivateAll() => buttons.forEach((b) {
+    b.active = false;
+  });
 
 }
 
@@ -31,9 +29,8 @@ class Button {
 
   Button(this.color);
 
-  void setActive(bool active) {
-    this.active = active;
-  }
+  String toString() => color;
+
 }
 
 class SimonSaysModule extends Module {
