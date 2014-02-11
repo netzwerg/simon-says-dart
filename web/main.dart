@@ -1,5 +1,4 @@
 import 'package:angular/angular.dart';
-import 'dart:html';
 
 // Temporary, please follow https://github.com/angular/angular.dart/issues/476
 @MirrorsUsed(override: '*')
