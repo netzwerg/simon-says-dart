@@ -1,4 +1,6 @@
-name: dart-playground
+name: simon-says-dart
 dependencies:
   browser: any
   angular: any
+dev_dependencies:
+  unittest: any
