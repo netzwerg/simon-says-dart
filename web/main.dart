@@ -11,6 +11,11 @@ import 'dart:mirrors';
 @NgController(selector: '[gameCtrl]', publishAs: 'ctrl')
 class GameController {
 
+  static const int LEFT_ARROW = 37;
+  static const int UP_ARROW = 38;
+  static const int DOWN_ARROW = 40;
+  static const int RIGHT_ARROW = 39;
+
   final Random r = new Random();
   final Duration defaultDuration = new Duration(milliseconds: 500);
 
@@ -20,7 +25,7 @@ class GameController {
   State state;
 
   GameController() {
-    buttons = [new Button("blue"), new Button("green"), new Button("yellow"), new Button("red")];
+    buttons = [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED];
     state = State.IDLE;
   }
 
@@ -57,7 +62,7 @@ class GameController {
   void playButton(Completer completer, Button head, List<Button> tail) {
     head.active = true;
     new Future.delayed(defaultDuration, () {
-        head.active = false;
+      head.active = false;
     }).then((_) {
       if (tail.isEmpty) {
         new Future.delayed(defaultDuration, () => completer.complete());
@@ -79,7 +84,29 @@ class GameController {
     return buttons[r.nextInt(4)];
   }
 
-  bool click(Button b) {
+  void onKeyUp(dom.KeyboardEvent event) {
+    if (isIdle() || isListening()) {
+      switch (event.keyCode) {
+        case LEFT_ARROW:
+          onClick(Button.BLUE);
+          break;
+        case UP_ARROW:
+          onClick(Button.GREEN);
+          break;
+        case DOWN_ARROW:
+          onClick(Button.YELLOW);
+          break;
+        case RIGHT_ARROW:
+          onClick(Button.RED);
+          break;
+        default: // ignore all others
+      }
+      new Future.delayed(defaultDuration, () => inactivateAll());
+    }
+  }
+
+  bool onClick(Button b) {
+    print("onClick " + b.toString());
     if (isIdle() || isListening()) {
       b.active = true;
       if (isListening()) {
@@ -87,7 +114,7 @@ class GameController {
         if (last != b) {
           gameOver();
         } else if (listeningSequence.isEmpty) {
-          nextLevel();
+          new Future.delayed(defaultDuration, () => nextLevel());
         }
       }
     }
@@ -105,7 +132,12 @@ class GameController {
 
 class Button {
 
-  String color;
+  static final BLUE = new Button("blue");
+  static final GREEN = new Button("green");
+  static final YELLOW = new Button("yellow");
+  static final RED = new Button("red");
+
+  final String color;
   bool active;
 
   Button(this.color);
