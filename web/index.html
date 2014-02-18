@@ -5,9 +5,7 @@
     <title>Simon Says</title>
 </head>
 <body gameCtrl ng-keyup="ctrl.onKeyUp($event)">
-    <div id="controls">
-        <button type="button" class="btn btn-primary btn-lg" ng-click="ctrl.start()">Start!</button>
-    </div>
+    <div class="header" ng-click="ctrl.start()">Start</div>
     <div id="buttons">
         <div ng-repeat="button in ctrl.buttons" id="{{button.color}}"  ng-mousedown="ctrl.onClick(button)" ng-mouseup="ctrl.inactivateAll()" ng-class="{'active' : button.active}"></div>
     </div>

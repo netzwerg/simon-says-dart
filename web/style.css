@@ -1,6 +1,21 @@
-body #controls {
-    padding-top: 10px;
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 50px;
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    font-family: "Trebuchet MS", Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: x-large;
+    z-index: 99999;
+    cursor: pointer;
+    outline: none;
 }
+
 body #buttons {
     position: fixed;
     z-index: -1;
