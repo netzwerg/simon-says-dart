@@ -23,10 +23,11 @@ class GameController {
   final List<Button> sequence = [];
   final List<Button> listeningSequence = [];
   State state;
+  String header;
 
   GameController() {
     buttons = [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED];
-    state = State.IDLE;
+    setState(State.IDLE);
   }
 
   void start() {
@@ -35,24 +36,24 @@ class GameController {
   }
 
   void nextLevel() {
-    dom.window.alert('Yay! Level ' + (sequence.length + 1).toString());
     sequence.add(nextRandomButton());
-    sequence.forEach((c) => print("Sequence " + c.toString()));
     playSequence(sequence);
   }
 
   void gameOver() {
-    dom.window.alert('Game Over');
-    state = State.IDLE;
+    inactivateAll();
+    setState(State.IDLE);
   }
 
   void playSequence(List<Button> sequence) {
-    state = State.PLAYING;
+    setState(State.PLAYING);
     inactivateAll();
     Button head = sequence.first;
     List<Button> tail = sequence.sublist(1, sequence.length);
     Completer completer = new Completer();
-    playButton(completer, head, tail);
+    new Future.delayed(defaultDuration, () {
+      playButton(completer, head, tail);
+    });
     completer.future.whenComplete(() {
       inactivateAll();
       listenForSequence(sequence);
@@ -75,7 +76,7 @@ class GameController {
   }
 
   void listenForSequence(List<Button> sequence) {
-    state = State.LISTENING;
+    setState(State.LISTENING);
     listeningSequence.clear();
     listeningSequence.addAll(sequence.reversed);
   }
@@ -106,7 +107,6 @@ class GameController {
   }
 
   bool onClick(Button b) {
-    print("onClick " + b.toString());
     if (isIdle() || isListening()) {
       b.active = true;
       if (isListening()) {
@@ -127,6 +127,27 @@ class GameController {
   void inactivateAll() => buttons.forEach((b) {
     b.active = false;
   });
+
+  void setState(State newState) {
+    switch (newState) {
+      case State.IDLE:
+        if (state == State.LISTENING) {
+          header = getLevel() + ": Ooops... Nochmal?";
+        } else {
+          header = "Start";
+        }
+        break;
+      case State.PLAYING:
+        header = getLevel() + ": Zuhören...";
+        break;
+      case State.LISTENING:
+        header = getLevel() + ": Nachspielen!";
+        break;
+    }
+    state = newState;
+  }
+
+  String getLevel() => "Level " + (sequence.length + 1).toString();
 
 }
 

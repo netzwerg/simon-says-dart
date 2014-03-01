@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html data-ng-app>
 <head>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     <title>Simon Says</title>
 </head>
 <body gameCtrl ng-keyup="ctrl.onKeyUp($event)">
-    <div class="header" ng-click="ctrl.start()">Start</div>
+    <div class="header" ng-click="ctrl.start()">{{ctrl.header}}</div>
     <div id="buttons">
         <div ng-repeat="button in ctrl.buttons" id="{{button.color}}"  ng-mousedown="ctrl.onClick(button)" ng-mouseup="ctrl.inactivateAll()" ng-class="{'active' : button.active}"></div>
     </div>
