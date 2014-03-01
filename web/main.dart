@@ -147,7 +147,7 @@ class GameController {
     state = newState;
   }
 
-  String getLevel() => "Level " + (sequence.length + 1).toString();
+  String getLevel() => "Level " + sequence.length.toString();
 
 }
 
