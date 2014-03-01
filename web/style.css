@@ -39,33 +39,33 @@ body #buttons > div.active {
 }
 
 body #buttons > div#blue {
-    background: #384765;
+    background: darkblue;
 }
 
 body #buttons > div#blue.active {
-    background: #2E72FF;
+    background: blue;
 }
 
 body #buttons > div#green {
-    background: #37693C;
+    background: darkgreen;
 }
 
 body #buttons > div#green.active {
-    background: #2AFA33;
+    background: limegreen;
 }
 
 body #buttons > div#yellow {
-    background: #FFB21A;
+    background: darkgoldenrod;
 }
 
 body #buttons > div#yellow.active {
-    background: #FFFF11;
+    background: yellow;
 }
 
 body #buttons > div#red {
-    background: #993D42;
+    background: darkred;
 }
 
 body #buttons > div#red.active {
-    background: #CC0033;
+    background: red;
 }
