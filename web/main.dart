@@ -52,7 +52,7 @@ class GameController {
     List<Button> tail = sequence.sublist(1, sequence.length);
     Completer completer = new Completer();
     new Future.delayed(defaultDuration, () {
-      playButton(completer, head, tail);
+      recursivelyPlayButtons(completer, head, tail);
     });
     completer.future.whenComplete(() {
       inactivateAll();
@@ -60,7 +60,11 @@ class GameController {
     });
   }
 
-  void playButton(Completer completer, Button head, List<Button> tail) {
+  /**
+   * Plays first button ('head') and recursively schedules playing of remaining buttons ('tail').
+   * Completes 'completer' when all buttons have been played (empty 'tail').
+   */
+  void recursivelyPlayButtons(Completer completer, Button head, List<Button> tail) {
     head.active = true;
     new Future.delayed(defaultDuration, () {
       head.active = false;
@@ -70,7 +74,7 @@ class GameController {
       } else {
         Button newHead = tail.first;
         List<Button> newTail = tail.sublist(1, tail.length);
-        new Future.delayed(defaultDuration, () => playButton(completer, newHead, newTail));
+        new Future.delayed(defaultDuration, () => recursivelyPlayButtons(completer, newHead, newTail));
       }
     });
   }
@@ -81,9 +85,7 @@ class GameController {
     listeningSequence.addAll(sequence.reversed);
   }
 
-  Button nextRandomButton() {
-    return buttons[r.nextInt(4)];
-  }
+  Button nextRandomButton() => buttons[r.nextInt(4)];
 
   void onKeyUp(dom.KeyboardEvent event) {
     if (isIdle() || isListening()) {
