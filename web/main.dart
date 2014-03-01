@@ -134,7 +134,7 @@ class GameController {
     switch (newState) {
       case State.IDLE:
         if (state == State.LISTENING) {
-          header = getLevel() + ": Ooops... Nochmal?";
+          header = getLevel() + ": Ooops... Neues Spiel?";
         } else {
           header = "Start";
         }
