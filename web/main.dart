@@ -15,6 +15,7 @@ class GameController {
   static const int UP_ARROW = 38;
   static const int DOWN_ARROW = 40;
   static const int RIGHT_ARROW = 39;
+  static const int SPACE = 32;
 
   final Random r = new Random();
   final Duration defaultDuration = new Duration(milliseconds: 500);
@@ -107,6 +108,9 @@ class GameController {
           break;
         case RIGHT_ARROW:
           onClick(Button.RED);
+          break;
+        case SPACE:
+          if (isIdle()) start();
           break;
         default: // ignore all others
       }
