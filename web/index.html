@@ -6,7 +6,11 @@
     <title>Simon Says</title>
 </head>
 <body gameCtrl ng-keyup="ctrl.onKeyUp($event)">
-    <div class="header" ng-click="ctrl.start()">{{ctrl.header}}<kbd>Space (not wired yet)</kbd></div>
+    <div class="header" ng-click="ctrl.start()">
+        <kbd>Space (not wired yet)</kbd>
+        {{ctrl.header}}
+    </div>
+    <div id="check" ng-if="ctrl.showCheckMark">&#x2713;</div>
     <div id="buttons">
         <div ng-repeat="button in ctrl.buttons" id="{{button.color}}"  ng-mousedown="ctrl.onClick(button)" ng-mouseup="ctrl.inactivateAll()" ng-class="{'active' : button.active}">
             <kbd>{{button.keyBinding}}</kbd>

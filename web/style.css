@@ -1,3 +1,4 @@
+
 .header {
     position: fixed;
     top: 0;
@@ -11,12 +12,25 @@
     text-align: center;
     font-family: "Trebuchet MS", Verdana, Geneva, Arial, Helvetica, sans-serif;
     font-size: x-large;
-    z-index: 99999;
+    z-index: 99;
     cursor: pointer;
     outline: none;
 }
 
-body #buttons {
+#check {
+    margin: auto;
+    position: absolute;
+    height: 30%;
+    width: 30%;
+    text-align: center;
+    top: 0; left: 0; bottom: 0; right: 0;
+    font-size: 20em;
+    font-weight: bold;
+    color: seagreen;
+    z-index: 9999;
+}
+
+#buttons {
     position: fixed;
     z-index: -1;
     top: 0;
@@ -25,7 +39,7 @@ body #buttons {
     height: 100%;
 }
 
-body #buttons > div {
+#buttons > div {
     height: 100%;
     width: 25%;
     cursor: pointer;
@@ -34,39 +48,39 @@ body #buttons > div {
     padding: 0;
 }
 
-body #buttons > div.active {
+#buttons > div.active {
     z-index: 4;
 }
 
-body #buttons > div#blue {
+#buttons > div#blue {
     background: darkblue;
 }
 
-body #buttons > div#blue.active {
+#buttons > div#blue.active {
     background: blue;
 }
 
-body #buttons > div#green {
+#buttons > div#green {
     background: darkgreen;
 }
 
-body #buttons > div#green.active {
+#buttons > div#green.active {
     background: limegreen;
 }
 
-body #buttons > div#yellow {
+#buttons > div#yellow {
     background: darkgoldenrod;
 }
 
-body #buttons > div#yellow.active {
+#buttons > div#yellow.active {
     background: yellow;
 }
 
-body #buttons > div#red {
+#buttons > div#red {
     background: darkred;
 }
 
-body #buttons > div#red.active {
+#buttons > div#red.active {
     background: red;
 }
 
@@ -98,7 +112,7 @@ kbd {
     left: 0;
 }
 
-body #buttons kbd {
+#buttons kbd {
     position: absolute;
     float: left;
     bottom: 0;

@@ -24,10 +24,12 @@ class GameController {
   final List<Button> listeningSequence = [];
   State state;
   String header;
+  bool showCheckMark;
 
   GameController() {
     buttons = [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED];
     setState(State.IDLE);
+    showCheckMark = false;
   }
 
   void start() {
@@ -37,7 +39,10 @@ class GameController {
 
   void nextLevel() {
     sequence.add(nextRandomButton());
-    playSequence(sequence);
+    new Future.delayed(defaultDuration, () {
+      showCheckMark = false;
+      playSequence(sequence);
+    });
   }
 
   void gameOver() {
@@ -64,6 +69,7 @@ class GameController {
    * Plays first button ('head') and recursively schedules playing of remaining buttons ('tail').
    * Completes 'completer' when all buttons have been played (empty 'tail').
    */
+
   void recursivelyPlayButtons(Completer completer, Button head, List<Button> tail) {
     head.active = true;
     new Future.delayed(defaultDuration, () {
@@ -116,7 +122,7 @@ class GameController {
         if (last != b) {
           gameOver();
         } else if (listeningSequence.isEmpty) {
-          new Future.delayed(defaultDuration, () => nextLevel());
+          new Future.delayed(defaultDuration, () => showCheckMark = true).then((_) => nextLevel());
         }
       }
     }
@@ -140,7 +146,7 @@ class GameController {
         }
         break;
       case State.PLAYING:
-        header = getLevel() + ": Zuhören...";
+        header = getLevel() + ": Beobachten...";
         break;
       case State.LISTENING:
         header = getLevel() + ": Nachspielen!";
