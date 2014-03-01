@@ -155,15 +155,16 @@ class GameController {
 
 class Button {
 
-  static final BLUE = new Button("blue");
-  static final GREEN = new Button("green");
-  static final YELLOW = new Button("yellow");
-  static final RED = new Button("red");
+  static final BLUE = new Button("blue", "\u2190");
+  static final GREEN = new Button("green", "\u2191");
+  static final YELLOW = new Button("yellow", "\u2193");
+  static final RED = new Button("red", "\u2192");
 
   final String color;
+  final String keyBinding;
   bool active;
 
-  Button(this.color);
+  Button(this.color, this.keyBinding);
 
   String toString() => color;
 
