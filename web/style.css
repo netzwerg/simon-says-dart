@@ -1,5 +1,5 @@
 
-.header {
+#header {
     position: fixed;
     top: 0;
     left: 0;
@@ -105,7 +105,7 @@ kbd {
     white-space: nowrap;
 }
 
-.header > kbd {
+#header > kbd {
     position: absolute;
     float: left;
     top: 0;

@@ -19,17 +19,16 @@ class GameController {
 
   final Random r = new Random();
   final Duration defaultDuration = new Duration(milliseconds: 500);
-
-  List<Button> buttons = [];
+  final List<Button> buttons = [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED];
   final List<Button> sequence = [];
   final List<Button> listeningSequence = [];
+
   State state;
   String header;
   bool showCheckMark;
 
   GameController() {
-    buttons = [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED];
-    setState(State.IDLE);
+    state = State.IDLE;
     showCheckMark = false;
   }
 
@@ -48,11 +47,11 @@ class GameController {
 
   void gameOver() {
     inactivateAll();
-    setState(State.IDLE);
+    state = State.GAME_OVER;
   }
 
   void playSequence(List<Button> sequence) {
-    setState(State.PLAYING);
+    state = State.PLAYING;
     inactivateAll();
     Button head = sequence.first;
     List<Button> tail = sequence.sublist(1, sequence.length);
@@ -87,7 +86,7 @@ class GameController {
   }
 
   void listenForSequence(List<Button> sequence) {
-    setState(State.LISTENING);
+    state = State.LISTENING;
     listeningSequence.clear();
     listeningSequence.addAll(sequence.reversed);
   }
@@ -95,7 +94,7 @@ class GameController {
   Button nextRandomButton() => buttons[r.nextInt(4)];
 
   void onKeyUp(dom.KeyboardEvent event) {
-    if (isIdle() || isListening()) {
+    if (isInputEnabled()) {
       switch (event.keyCode) {
         case LEFT_ARROW:
           onClick(Button.BLUE);
@@ -110,7 +109,7 @@ class GameController {
           onClick(Button.RED);
           break;
         case SPACE:
-          if (isIdle()) start();
+          if (mayStart()) start();
           break;
         default: // ignore all others
       }
@@ -119,7 +118,7 @@ class GameController {
   }
 
   bool onClick(Button b) {
-    if (isIdle() || isListening()) {
+    if (isInputEnabled()) {
       b.active = true;
       if (isListening()) {
         Button last = listeningSequence.removeLast();
@@ -132,32 +131,13 @@ class GameController {
     }
   }
 
-  bool isIdle() => State.IDLE == state;
-
+  bool isInputEnabled() => State.INPUT_ENABLED_STATES.contains(state);
   bool isListening() => State.LISTENING == state;
+  bool mayStart() => State.IDLE == state || State.GAME_OVER == state;
 
   void inactivateAll() => buttons.forEach((b) {
     b.active = false;
   });
-
-  void setState(State newState) {
-    switch (newState) {
-      case State.IDLE:
-        if (state == State.LISTENING) {
-          header = "Ooops... Neues Spiel?";
-        } else {
-          header = "Start";
-        }
-        break;
-      case State.PLAYING:
-        header = "Beobachten...";
-        break;
-      case State.LISTENING:
-        header = "Nachspielen!";
-        break;
-    }
-    state = newState;
-  }
 
 }
 
@@ -179,15 +159,16 @@ class Button {
 }
 
 class State {
-  static const IDLE = const State._(0);
-  static const PLAYING = const State._(1);
-  static const LISTENING = const State._(2);
+  static const IDLE = const State._("Start");
+  static const PLAYING = const State._("Beobachten...");
+  static const LISTENING = const State._("Nachspielen!");
+  static const GAME_OVER = const State._("Ooops... Neues Spiel?");
 
-  static get values => [IDLE, PLAYING, LISTENING];
+  static const List<State> INPUT_ENABLED_STATES = const [IDLE, LISTENING, GAME_OVER];
 
-  final int value;
+  final String description;
 
-  const State._(this.value);
+  const State._(this.description);
 }
 
 class SimonSaysModule extends Module {
