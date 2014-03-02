@@ -144,22 +144,20 @@ class GameController {
     switch (newState) {
       case State.IDLE:
         if (state == State.LISTENING) {
-          header = getLevel() + ": Ooops... Neues Spiel?";
+          header = "Ooops... Neues Spiel?";
         } else {
           header = "Start";
         }
         break;
       case State.PLAYING:
-        header = getLevel() + ": Beobachten...";
+        header = "Beobachten...";
         break;
       case State.LISTENING:
-        header = getLevel() + ": Nachspielen!";
+        header = "Nachspielen!";
         break;
     }
     state = newState;
   }
-
-  String getLevel() => "Level " + sequence.length.toString();
 
 }
 

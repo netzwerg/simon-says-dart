@@ -8,6 +8,7 @@
 <body gameCtrl ng-keyup="ctrl.onKeyUp($event)">
     <div class="header" ng-click="ctrl.start()">
         <kbd>Space</kbd>
+        <div id="level" ng-if="ctrl.sequence.length > 0">Level {{ctrl.sequence.length}}</div>
         {{ctrl.header}}
     </div>
     <div id="check" ng-if="ctrl.showCheckMark">&#x2713;</div>
