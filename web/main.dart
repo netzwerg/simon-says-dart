@@ -2,7 +2,8 @@ import 'package:angular/angular.dart';
 import 'dart:math';
 import 'dart:core';
 import 'dart:async';
-import 'dart:html' as dom;
+import 'dart:html';
+import 'dart:web_audio';
 
 // Temporary, please follow https://github.com/angular/angular.dart/issues/476
 @MirrorsUsed(override: '*')
@@ -22,12 +23,13 @@ class GameController {
   final List<Button> buttons = [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED];
   final List<Button> sequence = [];
   final List<Button> listeningSequence = [];
+  final AudioContext audioCtx;
 
   State state;
   String header;
   bool showCheckMark;
 
-  GameController() {
+  GameController(this.audioCtx) {
     state = State.IDLE;
     showCheckMark = false;
   }
@@ -71,7 +73,7 @@ class GameController {
    */
 
   void recursivelyPlayButtons(Completer completer, Button head, List<Button> tail) {
-    head.active = true;
+    head.play(audioCtx);
     new Future.delayed(defaultDuration, () {
       head.active = false;
     }).then((_) {
@@ -93,7 +95,7 @@ class GameController {
 
   Button nextRandomButton() => buttons[r.nextInt(4)];
 
-  void onKeyUp(dom.KeyboardEvent event) {
+  void onKeyUp(KeyboardEvent event) {
     if (isInputEnabled()) {
       switch (event.keyCode) {
         case LEFT_ARROW:
@@ -117,12 +119,12 @@ class GameController {
     }
   }
 
-  bool onClick(Button b) {
+  bool onClick(Button button) {
     if (isInputEnabled()) {
-      b.active = true;
+      button.play(audioCtx);
       if (isListening()) {
         Button last = listeningSequence.removeLast();
-        if (last != b) {
+        if (last != button) {
           gameOver();
         } else if (listeningSequence.isEmpty) {
           new Future.delayed(defaultDuration, () => showCheckMark = true).then((_) => nextLevel());
@@ -143,16 +145,27 @@ class GameController {
 
 class Button {
 
-  static final BLUE = new Button("blue", "\u2190");
-  static final GREEN = new Button("green", "\u2191");
-  static final YELLOW = new Button("yellow", "\u2193");
-  static final RED = new Button("red", "\u2192");
+  static final BLUE = new Button("blue", "\u2190", "c.ogg");
+  static final GREEN = new Button("green", "\u2191", "d.ogg");
+  static final YELLOW = new Button("yellow", "\u2193", "e.ogg");
+  static final RED = new Button("red", "\u2192", "f.ogg");
 
   final String color;
   final String keyBinding;
-  bool active;
+  final String audioUrl;
 
-  Button(this.color, this.keyBinding);
+  bool active;
+  AudioBuffer audioBuffer;
+
+  Button(this.color, this.keyBinding, this.audioUrl);
+
+  void play(AudioContext audioCtx) {
+    active = true;
+    AudioBufferSourceNode source = audioCtx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connectNode(audioCtx.destination, 0, 0);
+    source.start(0);
+  }
 
   String toString() => color;
 
@@ -172,11 +185,26 @@ class State {
 }
 
 class SimonSaysModule extends Module {
-  SimonSaysModule() {
+  SimonSaysModule(AudioContext audioCtx) {
+    value(AudioContext, audioCtx);
     type(GameController);
   }
 }
 
 main() {
-  ngBootstrap(module: new SimonSaysModule());
+  AudioContext audioCtx = new AudioContext();
+  [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED].forEach((button) {
+    loadAudioBuffer(audioCtx, button);
+  });
+  ngBootstrap(module: new SimonSaysModule(audioCtx));
+}
+
+void loadAudioBuffer(AudioContext audioCtx, Button button) {
+  var request = new HttpRequest();
+  request.open("GET", button.audioUrl, async: true);
+  request.responseType = "arraybuffer";
+  request.onLoad.listen((e) {
+    audioCtx.decodeAudioData(request.response).then((AudioBuffer buffer) => button.audioBuffer = buffer);
+  });
+  request.send();
 }
