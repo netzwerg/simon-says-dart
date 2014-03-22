@@ -4,6 +4,7 @@ import 'dart:core';
 import 'dart:async';
 import 'dart:html';
 import 'dart:web_audio';
+import 'dart:math';
 
 // Temporary, please follow https://github.com/angular/angular.dart/issues/476
 @MirrorsUsed(override: '*')
@@ -43,8 +44,15 @@ class GameController {
     sequence.add(nextRandomButton());
     new Future.delayed(defaultDuration, () {
       showCheckMark = false;
-      playSequence(sequence);
+      Duration speed = calcSpeed(sequence.length);
+      playSequence(speed, sequence);
     });
+  }
+
+  Duration calcSpeed(int sequenceLength) {
+    // accelerate exponentially
+    int ms = defaultDuration.inMilliseconds * pow(10, -(sequenceLength / 10));
+    return new Duration(milliseconds: ms);
   }
 
   void gameOver() {
@@ -52,14 +60,14 @@ class GameController {
     state = State.GAME_OVER;
   }
 
-  void playSequence(List<Button> sequence) {
+  void playSequence(Duration speed, List<Button> sequence) {
     state = State.PLAYING;
     inactivateAll();
     Button head = sequence.first;
     List<Button> tail = sequence.sublist(1, sequence.length);
     Completer completer = new Completer();
-    new Future.delayed(defaultDuration, () {
-      recursivelyPlayButtons(completer, head, tail);
+    new Future.delayed(speed, () {
+      recursivelyPlayButtons(speed, completer, head, tail);
     });
     completer.future.whenComplete(() {
       inactivateAll();
@@ -72,17 +80,17 @@ class GameController {
    * Completes 'completer' when all buttons have been played (empty 'tail').
    */
 
-  void recursivelyPlayButtons(Completer completer, Button head, List<Button> tail) {
+  void recursivelyPlayButtons(Duration speed, Completer completer, Button head, List<Button> tail) {
     head.play(audioCtx);
-    new Future.delayed(defaultDuration, () {
+    new Future.delayed(speed, () {
       head.active = false;
     }).then((_) {
       if (tail.isEmpty) {
-        new Future.delayed(defaultDuration, () => completer.complete());
+        new Future.delayed(speed, () => completer.complete());
       } else {
         Button newHead = tail.first;
         List<Button> newTail = tail.sublist(1, tail.length);
-        new Future.delayed(defaultDuration, () => recursivelyPlayButtons(completer, newHead, newTail));
+        new Future.delayed(speed, () => recursivelyPlayButtons(speed, completer, newHead, newTail));
       }
     });
   }
