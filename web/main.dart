@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:web_audio';
 import 'dart:math';
+import 'audio.dart';
 
 // Temporary, please follow https://github.com/angular/angular.dart/issues/476
 @MirrorsUsed(override: '*')
@@ -24,13 +25,13 @@ class GameController {
   final List<Button> buttons = [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED];
   final List<Button> sequence = [];
   final List<Button> listeningSequence = [];
-  final AudioContext audioCtx;
+  final AudioController audioCtrl;
 
   State state;
   String header;
   bool showCheckMark;
 
-  GameController(this.audioCtx) {
+  GameController(this.audioCtrl) {
     state = State.IDLE;
     showCheckMark = false;
   }
@@ -58,6 +59,7 @@ class GameController {
   void gameOver() {
     inactivateAll();
     state = State.GAME_OVER;
+    audioCtrl.play(AudioController.URL_PIANO_F_6);
   }
 
   void playSequence(Duration speed, List<Button> sequence) {
@@ -81,7 +83,7 @@ class GameController {
    */
 
   void recursivelyPlayButtons(Duration speed, Completer completer, Button head, List<Button> tail) {
-    head.play(audioCtx);
+    head.play(audioCtrl);
     new Future.delayed(speed, () {
       head.active = false;
     }).then((_) {
@@ -129,7 +131,7 @@ class GameController {
 
   bool onClick(Button button) {
     if (isInputEnabled()) {
-      button.play(audioCtx);
+      button.play(audioCtrl);
       if (isListening()) {
         Button last = listeningSequence.removeLast();
         if (last != button) {
@@ -153,26 +155,22 @@ class GameController {
 
 class Button {
 
-  static final BLUE = new Button("blue", "\u2190", "c.ogg");
-  static final GREEN = new Button("green", "\u2191", "d.ogg");
-  static final YELLOW = new Button("yellow", "\u2193", "e.ogg");
-  static final RED = new Button("red", "\u2192", "f.ogg");
+  static final BLUE = new Button("blue", "\u2190", AudioController.URL_PIANO_C);
+  static final GREEN = new Button("green", "\u2191", AudioController.URL_PIANO_D);
+  static final YELLOW = new Button("yellow", "\u2193", AudioController.URL_PIANO_E);
+  static final RED = new Button("red", "\u2192", AudioController.URL_PIANO_F);
 
   final String color;
   final String keyBinding;
   final String audioUrl;
 
   bool active;
-  AudioBuffer audioBuffer;
 
   Button(this.color, this.keyBinding, this.audioUrl);
 
-  void play(AudioContext audioCtx) {
+  void play(AudioController audioCtrl) {
     active = true;
-    AudioBufferSourceNode source = audioCtx.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connectNode(audioCtx.destination, 0, 0);
-    source.start(0);
+    audioCtrl.play(audioUrl);
   }
 
   String toString() => color;
@@ -193,26 +191,14 @@ class State {
 }
 
 class SimonSaysModule extends Module {
-  SimonSaysModule(AudioContext audioCtx) {
-    value(AudioContext, audioCtx);
+  SimonSaysModule(AudioController audioCtrl) {
+    value(AudioController, audioCtrl);
     type(GameController);
   }
 }
 
 main() {
-  AudioContext audioCtx = new AudioContext();
-  [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED].forEach((button) {
-    loadAudioBuffer(audioCtx, button);
-  });
-  ngBootstrap(module: new SimonSaysModule(audioCtx));
-}
-
-void loadAudioBuffer(AudioContext audioCtx, Button button) {
-  var request = new HttpRequest();
-  request.open("GET", button.audioUrl, async: true);
-  request.responseType = "arraybuffer";
-  request.onLoad.listen((e) {
-    audioCtx.decodeAudioData(request.response).then((AudioBuffer buffer) => button.audioBuffer = buffer);
-  });
-  request.send();
+  AudioController audioCtrl = new AudioController();
+  audioCtrl.loadAudioBuffers();
+  ngBootstrap(module: new SimonSaysModule(audioCtrl));
 }
