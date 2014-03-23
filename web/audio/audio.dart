@@ -2,13 +2,13 @@ import 'dart:web_audio';
 import 'dart:html';
 import 'dart:collection';
 
-class AudioController {
+class AudioManager {
 
-  static const String URL_PIANO_C = "c.ogg";
-  static const String URL_PIANO_D = "d.ogg";
-  static const String URL_PIANO_E = "e.ogg";
-  static const String URL_PIANO_F = "f.ogg";
-  static const String URL_PIANO_F_6 = "f6.ogg";
+  static const String URL_PIANO_C = "audio/c.ogg";
+  static const String URL_PIANO_D = "audio/d.ogg";
+  static const String URL_PIANO_E = "audio/e.ogg";
+  static const String URL_PIANO_F = "audio/f.ogg";
+  static const String URL_PIANO_F_6 = "audio/f6.ogg";
 
   final List<String> allUrls = [URL_PIANO_C, URL_PIANO_D, URL_PIANO_E, URL_PIANO_F, URL_PIANO_F_6];
   final Map<String, AudioBuffer> buffersByUrl = new HashMap<String, AudioBuffer>();

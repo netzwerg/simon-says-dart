@@ -5,7 +5,7 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:web_audio';
 import 'dart:math';
-import 'audio.dart';
+import 'audio/audio.dart';
 
 // Temporary, please follow https://github.com/angular/angular.dart/issues/476
 @MirrorsUsed(override: '*')
@@ -25,13 +25,13 @@ class GameController {
   final List<Button> buttons = [Button.BLUE, Button.GREEN, Button.YELLOW, Button.RED];
   final List<Button> sequence = [];
   final List<Button> listeningSequence = [];
-  final AudioController audioCtrl;
+  final AudioManager audio;
 
   State state;
   String header;
   bool showCheckMark;
 
-  GameController(this.audioCtrl) {
+  GameController(this.audio) {
     state = State.IDLE;
     showCheckMark = false;
   }
@@ -59,7 +59,7 @@ class GameController {
   void gameOver() {
     inactivateAll();
     state = State.GAME_OVER;
-    audioCtrl.play(AudioController.URL_PIANO_F_6);
+    audio.play(AudioManager.URL_PIANO_F_6);
   }
 
   void playSequence(Duration speed, List<Button> sequence) {
@@ -83,7 +83,7 @@ class GameController {
    */
 
   void recursivelyPlayButtons(Duration speed, Completer completer, Button head, List<Button> tail) {
-    head.play(audioCtrl);
+    head.play(audio);
     new Future.delayed(speed, () {
       head.active = false;
     }).then((_) {
@@ -131,7 +131,7 @@ class GameController {
 
   bool onClick(Button button) {
     if (isInputEnabled()) {
-      button.play(audioCtrl);
+      button.play(audio);
       if (isListening()) {
         Button last = listeningSequence.removeLast();
         if (last != button) {
@@ -155,10 +155,10 @@ class GameController {
 
 class Button {
 
-  static final BLUE = new Button("blue", "\u2190", AudioController.URL_PIANO_C);
-  static final GREEN = new Button("green", "\u2191", AudioController.URL_PIANO_D);
-  static final YELLOW = new Button("yellow", "\u2193", AudioController.URL_PIANO_E);
-  static final RED = new Button("red", "\u2192", AudioController.URL_PIANO_F);
+  static final BLUE = new Button("blue", "\u2190", AudioManager.URL_PIANO_C);
+  static final GREEN = new Button("green", "\u2191", AudioManager.URL_PIANO_D);
+  static final YELLOW = new Button("yellow", "\u2193", AudioManager.URL_PIANO_E);
+  static final RED = new Button("red", "\u2192", AudioManager.URL_PIANO_F);
 
   final String color;
   final String keyBinding;
@@ -168,9 +168,9 @@ class Button {
 
   Button(this.color, this.keyBinding, this.audioUrl);
 
-  void play(AudioController audioCtrl) {
+  void play(AudioManager audio) {
     active = true;
-    audioCtrl.play(audioUrl);
+    audio.play(audioUrl);
   }
 
   String toString() => color;
@@ -191,14 +191,14 @@ class State {
 }
 
 class SimonSaysModule extends Module {
-  SimonSaysModule(AudioController audioCtrl) {
-    value(AudioController, audioCtrl);
+  SimonSaysModule(AudioManager audio) {
+    value(AudioManager, audio);
     type(GameController);
   }
 }
 
 main() {
-  AudioController audioCtrl = new AudioController();
-  audioCtrl.loadAudioBuffers();
-  ngBootstrap(module: new SimonSaysModule(audioCtrl));
+  AudioManager audio = new AudioManager();
+  audio.loadAudioBuffers();
+  ngBootstrap(module: new SimonSaysModule(audio));
 }
