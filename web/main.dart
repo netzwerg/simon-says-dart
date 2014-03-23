@@ -19,6 +19,7 @@ class GameController {
   static const int DOWN_ARROW = 40;
   static const int RIGHT_ARROW = 39;
   static const int SPACE = 32;
+  static const int HUMAN_FRIENDLY_MIN_DURATION_MS = 70;
 
   final Random r = new Random();
   final Duration defaultDuration = new Duration(milliseconds: 500);
@@ -53,7 +54,8 @@ class GameController {
   Duration calcSpeed(int sequenceLength) {
     // accelerate exponentially
     int ms = defaultDuration.inMilliseconds * pow(10, -(sequenceLength / 10));
-    return new Duration(milliseconds: ms);
+    int humanFriendlyMs = max(ms, HUMAN_FRIENDLY_MIN_DURATION_MS);
+    return new Duration(milliseconds: humanFriendlyMs);
   }
 
   void gameOver() {
