@@ -7,10 +7,6 @@ import 'dart:web_audio';
 import 'dart:math';
 import 'audio/audio.dart';
 
-// Temporary, please follow https://github.com/angular/angular.dart/issues/476
-@MirrorsUsed(override: '*')
-import 'dart:mirrors';
-
 @NgController(selector: '[gameCtrl]', publishAs: 'ctrl')
 class GameController {
 
