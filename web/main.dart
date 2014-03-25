@@ -199,8 +199,10 @@ class SimonSaysModule extends Module {
   }
 }
 
+const String AUDIO_URL_PREFIX = "audio";
+
 main() {
-  AudioManager audio = new AudioManager();
+  AudioManager audio = new AudioManager(AUDIO_URL_PREFIX);
   audio.loadAudioBuffers();
   ngBootstrap(module: new SimonSaysModule(audio));
 }
