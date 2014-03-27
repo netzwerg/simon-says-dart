@@ -47,17 +47,13 @@ class GameController {
     });
   }
 
+  Button nextRandomButton() => buttons[r.nextInt(buttons.length)];
+
   Duration calcSpeed(int sequenceLength) {
-    // accelerate exponentially
+    // accelerate gradually, but stop at max speed
     int ms = defaultDuration.inMilliseconds * pow(10, -(sequenceLength / 10));
     int humanFriendlyMs = max(ms, HUMAN_FRIENDLY_MIN_DURATION_MS);
     return new Duration(milliseconds: humanFriendlyMs);
-  }
-
-  void gameOver() {
-    inactivateAll();
-    state = State.GAME_OVER;
-    audio.play(AudioManager.URL_PIANO_F_6);
   }
 
   void playSequence(Duration speed, List<Button> sequence) {
@@ -79,7 +75,6 @@ class GameController {
    * Plays first button ('head') and recursively schedules playing of remaining buttons ('tail').
    * Completes 'completer' when all buttons have been played (empty 'tail').
    */
-
   void recursivelyPlayButtons(Duration speed, Completer completer, Button head, List<Button> tail) {
     head.play(audio);
     new Future.delayed(speed, () {
@@ -100,8 +95,6 @@ class GameController {
     listeningSequence.clear();
     listeningSequence.addAll(sequence.reversed);
   }
-
-  Button nextRandomButton() => buttons[r.nextInt(4)];
 
   void onKeyUp(KeyboardEvent event) {
     if (isInputEnabled()) {
@@ -149,6 +142,12 @@ class GameController {
     b.active = false;
   });
 
+  void gameOver() {
+    inactivateAll();
+    state = State.GAME_OVER;
+    audio.play(AudioManager.URL_PIANO_F_6);
+  }
+
 }
 
 class Button {
@@ -176,6 +175,7 @@ class Button {
 }
 
 class State {
+
   static const IDLE = const State._("Start");
   static const PLAYING = const State._("Beobachten...");
   static const LISTENING = const State._("Nachspielen!");
