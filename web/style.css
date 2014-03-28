@@ -4,9 +4,10 @@
     top: 0;
     left: 0;
     right: 0;
+    padding: 50px;
+    height: 49px; /* ribbon-height (149px) minus padding */
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
-    padding: 50px;
     display: block;
     text-decoration: none;
     text-align: center;
@@ -26,7 +27,7 @@
     top: 0; left: 0; bottom: 0; right: 0;
     font-size: 20em;
     font-weight: bold;
-    color: seagreen;
+    color: white;
     z-index: 9999;
 }
 
