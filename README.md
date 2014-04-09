@@ -2,7 +2,7 @@ What is this?
 -------------
 * Classic "Simon Says" game
 * Implemented in [AngularDart](https://angulardart.org)
-* Optimized for usage with [MakeyMakey](http://makeymakey.com)
+* Optimized for usage with [MaKey MaKey](http://makeymakey.com)
 * Look & Feel inspired by [uxmonk](http://labs.uxmonk.com/simon-says/)
 
 Can I play it?
@@ -18,5 +18,5 @@ And behind the scenes?
 
 Why is it in German?
 --------------------
-Game instructions are in German because I built the game for my daughter. She is in 2nd grade, and I will visit
-her class for some MakeyMakey fun soon.
+Game instructions are in German because I built the game for my daughter. She is in 2nd grade, and I visited
+her class for some MaKey MaKey fun.
