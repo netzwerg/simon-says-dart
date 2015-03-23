@@ -1,6 +1,6 @@
 name: simon-says-dart
 dependencies:
   browser: any
-  angular: any
+  angular: 0.9.0
 dev_dependencies:
   unittest: any
